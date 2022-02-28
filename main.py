@@ -34,6 +34,13 @@ def root():
     return {"s": "success", "message": "Welcome to Address Book Application"}
 
 
+# GET - RETRIEVE ADDRESS
+@app.get('/address', tags=["Retrieve Address"])
+def getAddress():
+    res = getAddressInternal()
+    return res
+
+
 # POST - ADD ADDRESS
 @app.post('/address', tags=["Add Address"])
 def addAddress(addressDet: createAddress):

@@ -3,6 +3,22 @@ import geopy
 import geopy.distance
 
 
+def getAddressInternal():
+    '''
+    Retrieve all the address from database
+    :return: {s=error/success, message, data}
+    '''
+    try:
+        db = sqlite3.connect("addressData.db")
+        cursor = db.cursor()
+        queryRes = cursor.execute('''SELECT * FROM ADDRESS_DATA;''')
+        queryRes = queryRes.fetchall()
+        db.close()
+        return {"s": "success", "message": "", "data": queryRes}
+    except Exception as e:
+        return {"s": "error", "message": "db connection error."}
+
+
 def addAddressInternal(addressDet):
     '''
     Adding the new address to database
@@ -10,7 +26,6 @@ def addAddressInternal(addressDet):
     :return: {s=error/success, message}
     '''
     try:
-        # import pdb;pdb.set_trace()
         db = sqlite3.connect("addressData.db")
         cursor = db.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS ADDRESS_DATA (ADDRESS_ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT NOT NULL, ADDRESS_COORDINATE_X FLOAT NOT NULL, ADDRESS_COORDINATE_Y FLOAT NOT NULL);''')
@@ -31,7 +46,6 @@ def modifyAddressInternal(addressDet):
     try:
         db = sqlite3.connect("addressData.db")
         cursor = db.cursor()
-        # import pdb;pdb.set_trace()
         cursor.execute('''UPDATE ADDRESS_DATA SET ADDRESS_COORDINATE_X = %f, ADDRESS_COORDINATE_Y = %f WHERE ADDRESS_ID = %d;''' % (addressDet.addressCoordinateX, addressDet.addressCoordinateY, addressDet.id))
         db.commit()
         db.close()
